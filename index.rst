@@ -11,6 +11,7 @@
     :maxdepth: -1
 
     About Holmes <rst/about/index>
+    System Overview <rst/components/index>
     Configuration <rst/configuration/index>
     Installation <rst/installation/index>
     Extending Holmes <rst/extensions/index>
