@@ -13,6 +13,7 @@
 # serve to show the default.
 
 import sys
+import mock
 import os
 import shlex
 
@@ -29,7 +30,9 @@ import shlex
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+sys.modules['unittest'] = mock.Mock()
 extensions = [
+    'sphinx.ext.doctest'
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
