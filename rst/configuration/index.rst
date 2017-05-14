@@ -25,9 +25,15 @@ Configure Holmes' Components
 .. begin intro
    -----------
 
-Configuration documentation for all components of the Holmes Processing
-framework are available here.
+Configuration files control many aspects of Holmes Processing. Every component of Holmes is controlled by configuration files. In this section we are going to see more configuration files.
+
 Additionally there is some information available on other components.
+
+So lets go out start looking at some of the configuration files and look at their formats and how to get them do what we want them to do. You can actually tell what the configuration file control just by its name. 
+
+We have used two types of configuration files
+1. JSON 
+2. YAML 
 
 Core configuration documentation:
 
@@ -59,11 +65,14 @@ Additional (partial) configuration documentation:
 
 There's two files of interest here:
 
-- ``config/docker-compose.yml``
-- ``config/totem.conf``
+1. ``config/docker-compose.yml``
+2. ``config/totem.conf``
 
-The docker-compose config file is responsible for service launch configuration.
-Each entry in the ``services:`` section is of the form:
+** docker-compose.yml **
+
+Compose is a tool for defining and running multi-container Docker applications. The docker-compose config file is responsible for service launch configuration. We create and start all the services with this configuration.
+
+In the __docker-compose.yml__, Each entry in the ``services:`` section is of the form:
 
 .. code-block:: yaml
 
@@ -90,6 +99,9 @@ Each entry in the ``services:`` section is of the form:
 |                   | a solution like docker-compose requires some free ports.                        |
 |                   |                                                                                 |
 +-------------------+---------------------------------------------------------------------------------+
+
+
+** totem.conf **
 
 The totem config file mainly tells Totem what services are available and where
 to find them. But you can also configure its request timeouts here.
@@ -476,11 +488,94 @@ TODO
 
 ----
 
-`Standard Services <Totem_Services_>`_
+`Holmes-Totem Services <Totem_Services_>`_
 ========================================================================
+Each Totem Service runs independently in an isolated docker container. The ``service.conf`` file in each service is needed for the configuration of the service. The configuration settings feeded into this file is used by the service logic for the working of the service. 
 
+**In Golang:**
+
+The general format of the service.conf for Golang is just like any other JSON configuration file.
+
+.. code-block:: json
+
+{
+	"HTTPBinding": ":8080",
+	"MaxNumberOfObjects": 10000 ,
+}
+
+**reading configuration**:
+
+Here is the sample configuration file for pdfparse service.
+
+1. With the json package it's a snap to read JSON data into your Go programs. The json package provides ``Decoder`` and ``Encoder`` types to support the common operation of reading and writing streams of JSON data. We read the JSON file and then we fit the output to Config struct.
+
+.. code-block:: json
+
+import (
+	"encoding/json"
+	"flag"
+	"os"
+)
+
+// ....
+
+var config   *Config 
+var configPath string
+
+// ....
+
+type Config struct {
+	HTTPBinding        string
+	MaxNumberOfObjects int
+}
+
+// ....
+
+flag.StringVar(&configPath, "config", "", "Path to the configuration file")
+flag.Parse()
+
+config := &Config{}
+
+cfile, _ := os.Open(configPath)
+dec := json.NewDecoder(cfile) // reading from json data
+
+if err := dec.Decode(&config); err != nil {
+	// handle error
+}
+
+For more info on reading JSON file in golang refer to this._https://blog.golang.org/json-and-go
+
+
+** For Python **	
+
+And the general format of the service.conf for python3 is like any other YAML configuration file.
+
+**reading configuration**:
+
+.. code-block:: yaml
+
+[settings]
+Port        = 8080
+
+[ansmeta]
+dns_server  = 8.8.8.8
+rdtypes     = A,AAAA,NS,MX,SOA,CNAME,TXT,PTR
+
+
+
+
+
+
+The path of the configuration file must be provided as an argument when running service.
+
+
+|
+
+----
+
+`Holmes-Totem-Dynamic Services <Totem_Dynamic_Services_>`_
+========================================================================
 TODO
-
 
 
 |
