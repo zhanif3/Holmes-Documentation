@@ -324,6 +324,8 @@ helloworld.py
 helloworld.go
 ::::::::::::::::::::::::::::::::::::
 
+.. code-block:: go
+
   package main
 
   import (
